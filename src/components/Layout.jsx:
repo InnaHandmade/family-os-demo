@@ -1,0 +1,24 @@
+import { useState } from 'react'
+import Sidebar from './Sidebar'
+import Topbar from './Topbar'
+
+function Layout({ children, currentSection, onNavigate }) {
+  const [sidebarOpen, setSidebarOpen] = useState(false)
+
+  return (
+    <div className="min-h-screen bg-gray-950 text-white flex flex-col lg:flex-row">
+      <Topbar onMenuToggle={() => setSidebarOpen(true)} />
+      <Sidebar
+        currentSection={currentSection}
+        onNavigate={onNavigate}
+        isOpen={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+      />
+      <main className="flex-1 p-6 overflow-auto">
+        {children}
+      </main>
+    </div>
+  )
+}
+
+export default Layout

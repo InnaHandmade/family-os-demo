@@ -1,4 +1,67 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
+
+// --- File Attachments ---
+function FileAttachments({ files = [], onChange }) {
+  const inputRef = useRef()
+  const MAX_SIZE = 4 * 1024 * 1024 // 4MB per file
+
+  function handleFiles(e) {
+    const selected = Array.from(e.target.files)
+    selected.forEach(file => {
+      if (file.size > MAX_SIZE) {
+        alert(`Файл "${file.name}" слишком большой (макс. 4MB)`)
+        return
+      }
+      const reader = new FileReader()
+      reader.onload = ev => {
+        onChange([...files, { name: file.name, type: file.type, data: ev.target.result, size: file.size }])
+      }
+      reader.readAsDataURL(file)
+    })
+    e.target.value = ''
+  }
+
+  function download(file) {
+    const a = document.createElement('a')
+    a.href = file.data
+    a.download = file.name
+    a.click()
+  }
+
+  function remove(idx) {
+    onChange(files.filter((_, i) => i !== idx))
+  }
+
+  function formatSize(bytes) {
+    return bytes < 1024 * 1024 ? `${(bytes / 1024).toFixed(0)}KB` : `${(bytes / 1024 / 1024).toFixed(1)}MB`
+  }
+
+  return (
+    <div className="space-y-2">
+      {files.length > 0 && (
+        <div className="space-y-1">
+          {files.map((f, i) => (
+            <div key={i} className="flex items-center gap-2 p-2 rounded-lg bg-gray-800 border border-gray-700">
+              <span className="text-gray-400 text-xs">📎</span>
+              <button onClick={() => download(f)} className="text-xs text-blue-400 hover:text-blue-300 flex-1 text-left truncate">
+                {f.name}
+              </button>
+              <span className="text-xs text-gray-600 flex-shrink-0">{formatSize(f.size)}</span>
+              <button onClick={() => remove(i)} className="text-gray-600 hover:text-red-400 text-xs flex-shrink-0">✕</button>
+            </div>
+          ))}
+        </div>
+      )}
+      <button
+        onClick={() => inputRef.current.click()}
+        className="text-xs text-gray-500 hover:text-gray-300 flex items-center gap-1 transition-colors"
+      >
+        <span>📎</span> Прикрепить файл
+      </button>
+      <input ref={inputRef} type="file" multiple className="hidden" onChange={handleFiles} />
+    </div>
+  )
+}
 
 const defaultCompanies = [
   { id: 1, name: 'Tech Solutions Ltd', country: 'UK', status: 'Active', type: 'LLC', since: '2021', iban: 'GB29NWBK60161331926819', swift: 'NWBKGB2L', bank: 'NatWest Bank', bankAddress: 'London, UK' },
@@ -197,6 +260,12 @@ function ContractsTab({ contracts, setContracts, companies }) {
             <span>{c.amount}</span><span>·</span>
             <span>до {c.until}</span>
           </div>
+          <div className="mt-3 pt-3 border-t border-gray-800">
+            <FileAttachments
+              files={c.files ?? []}
+              onChange={files => setContracts(prev => prev.map(x => x.id === c.id ? { ...x, files } : x))}
+            />
+          </div>
         </div>
       ))}
       {showModal && <NewContractModal companies={companies} onClose={() => setShowModal(false)} onSave={c => setContracts(prev => [c, ...prev])} />}
@@ -312,6 +381,12 @@ function InvoicesTab({ invoices, setInvoices, companies }) {
           {inv.description && (
             <div className="text-xs text-gray-600 mt-1 truncate">{inv.description}</div>
           )}
+          <div className="mt-3 pt-3 border-t border-gray-800">
+            <FileAttachments
+              files={inv.files ?? []}
+              onChange={files => setInvoices(prev => prev.map(i => i.id === inv.id ? { ...i, files } : i))}
+            />
+          </div>
         </div>
       ))}
       {showModal && (

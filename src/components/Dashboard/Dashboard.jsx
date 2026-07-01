@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { DEFAULT_FAMILY, loadData, saveData } from '../../lib/data'
+import { loadSeedData, exportAllData, importAllData } from '../../lib/seedData'
 
 const colorMap = {
   yellow: 'text-yellow-400 bg-yellow-500/10 border border-yellow-500/20',
@@ -183,17 +184,80 @@ function AddFamilyCard({ onAdd }) {
   )
 }
 
+// --- Data Panel ---
+function DataPanel({ onReload }) {
+  const [status, setStatus] = useState('')
+  const importRef = useRef(null)
+
+  function handleSeed() {
+    if (!window.confirm('Загрузить демо-данные? Текущие данные будут заменены.')) return
+    loadSeedData()
+    setStatus('✓ Демо-данные загружены')
+    setTimeout(() => { setStatus(''); onReload() }, 1200)
+  }
+
+  function handleExport() {
+    exportAllData()
+    setStatus('✓ Файл скачан')
+    setTimeout(() => setStatus(''), 2000)
+  }
+
+  async function handleImport(e) {
+    const file = e.target.files[0]
+    if (!file) return
+    try {
+      await importAllData(file)
+      setStatus('✓ Данные восстановлены')
+      setTimeout(() => { setStatus(''); onReload() }, 1200)
+    } catch (err) {
+      setStatus(`✗ ${err.message}`)
+      setTimeout(() => setStatus(''), 3000)
+    }
+    e.target.value = ''
+  }
+
+  return (
+    <div>
+      <h2 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3">⚙ Данные</h2>
+      <div className="flex flex-wrap gap-2 items-center">
+        <button
+          onClick={handleSeed}
+          className="text-xs px-3 py-2 rounded-lg bg-yellow-500/10 text-yellow-400 border border-yellow-500/20 hover:bg-yellow-500/20 transition-colors"
+        >
+          ✦ Загрузить демо-данные
+        </button>
+        <button
+          onClick={handleExport}
+          className="text-xs px-3 py-2 rounded-lg bg-gray-800 text-gray-400 border border-gray-700 hover:bg-gray-700 transition-colors"
+        >
+          ↓ Экспорт JSON
+        </button>
+        <button
+          onClick={() => importRef.current?.click()}
+          className="text-xs px-3 py-2 rounded-lg bg-gray-800 text-gray-400 border border-gray-700 hover:bg-gray-700 transition-colors"
+        >
+          ↑ Импорт JSON
+        </button>
+        <input ref={importRef} type="file" accept=".json" onChange={handleImport} className="hidden" />
+        {status && <span className="text-xs text-green-400">{status}</span>}
+      </div>
+    </div>
+  )
+}
+
 // --- Dashboard ---
 function Dashboard({ onNavigate }) {
   const [family, setFamily] = useState(() => loadData('family-members', DEFAULT_FAMILY))
   const [urgent, setUrgent] = useState([])
   const [moduleCards, setModuleCards] = useState([])
+  const [dataKey, setDataKey] = useState(0)
 
-  // Refresh real data on mount
+  // Refresh real data on mount and after seed/import
   useEffect(() => {
     setUrgent(getUrgentItems())
     setModuleCards(getModuleCards())
-  }, [])
+    setFamily(loadData('family-members', DEFAULT_FAMILY))
+  }, [dataKey])
 
   useEffect(() => { saveData('family-members', family) }, [family])
 
@@ -257,6 +321,9 @@ function Dashboard({ onNavigate }) {
           <AddFamilyCard onAdd={handleAdd} />
         </div>
       </div>
+
+      {/* Data panel */}
+      <DataPanel onReload={() => setDataKey(k => k + 1)} />
     </div>
   )
 }

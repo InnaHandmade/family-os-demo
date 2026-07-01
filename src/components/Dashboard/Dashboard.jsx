@@ -269,12 +269,36 @@ function Dashboard({ onNavigate }) {
     setFamily(prev => [...prev, { id: `person-${Date.now()}`, name, role: 'Member', emoji: '👤', countries: [] }])
   }
 
+  // detect empty state: no docs, no medical, no education
+  const isEmpty = moduleCards.every(m => m.count === 0)
+
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-white">Dashboard</h1>
         <p className="text-gray-500 text-sm mt-1">Обзор Family OS</p>
       </div>
+
+      {/* Onboarding banner — shown only when all modules are empty */}
+      {isEmpty && (
+        <div className="rounded-2xl border border-yellow-500/20 bg-yellow-500/5 p-5 space-y-3">
+          <div className="text-yellow-400 font-semibold text-base">👋 Добро пожаловать в Family OS</div>
+          <p className="text-gray-400 text-sm leading-relaxed">
+            Это демо-версия приложения для управления семейными документами, медициной, образованием и бизнесом — в разрезе нескольких стран.
+          </p>
+          <div className="text-sm text-gray-500 space-y-1">
+            <div>→ Загрузи демо-данные чтобы увидеть приложение в работе</div>
+            <div>→ Используй <kbd className="bg-gray-800 text-gray-300 px-1.5 py-0.5 rounded text-xs">⌘K</kbd> для поиска по всем модулям</div>
+            <div>→ Нажми на карточку участника семьи чтобы увидеть все его данные</div>
+          </div>
+          <button
+            onClick={() => { loadSeedData(); setDataKey(k => k + 1) }}
+            className="mt-1 px-4 py-2 rounded-lg bg-yellow-500/20 text-yellow-400 text-sm font-medium hover:bg-yellow-500/30 transition-colors border border-yellow-500/30"
+          >
+            ✦ Загрузить демо-данные
+          </button>
+        </div>
+      )}
 
       {/* Module cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">

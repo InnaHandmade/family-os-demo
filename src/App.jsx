@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Layout from './components/Layout/Layout'
 import Dashboard from './components/Dashboard/Dashboard'
 import Business from './components/Business/Business'
@@ -6,10 +6,18 @@ import CountryDocs from './components/CountryDocs/CountryDocs'
 import Education from './components/Education/Education'
 import Medical from './components/Medical/Medical'
 import PersonView from './components/PersonView/PersonView'
-import { AuthProvider } from './contexts/AuthContext'
+import { AuthProvider, useAuth } from './contexts/AuthContext'
 
 function AppInner() {
   const [currentSection, setCurrentSection] = useState('dashboard')
+  const { currentUser } = useAuth()
+
+  // Accountant can only access Business — redirect on role change
+  useEffect(() => {
+    if (currentUser?.role === 'Accountant' && currentSection !== 'business') {
+      setCurrentSection('business')
+    }
+  }, [currentUser?.role])
 
   function renderSection() {
     if (currentSection === 'dashboard') return <Dashboard onNavigate={setCurrentSection} />

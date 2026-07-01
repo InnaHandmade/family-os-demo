@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { DEFAULT_FAMILY, loadData, saveData } from '../../lib/data'
 import { loadSeedData, exportAllData, importAllData } from '../../lib/seedData'
 import DeleteButton from '../shared/DeleteButton'
+import { useAuth } from '../../contexts/AuthContext'
 
 const colorMap = {
   yellow: 'text-yellow-400 bg-yellow-500/10 border border-yellow-500/20',
@@ -199,6 +200,7 @@ function AddFamilyCard({ onAdd }) {
 
 // --- Data Panel ---
 function DataPanel({ onReload }) {
+  const { refreshFamily } = useAuth()
   const [status, setStatus] = useState('')
   const importRef = useRef(null)
 
@@ -206,7 +208,7 @@ function DataPanel({ onReload }) {
     if (!window.confirm('Загрузить демо-данные? Текущие данные будут заменены.')) return
     loadSeedData()
     setStatus('✓ Демо-данные загружены')
-    setTimeout(() => { setStatus(''); onReload() }, 1200)
+    setTimeout(() => { setStatus(''); refreshFamily(); onReload() }, 1200)
   }
 
   function handleExport() {
@@ -221,7 +223,7 @@ function DataPanel({ onReload }) {
     try {
       await importAllData(file)
       setStatus('✓ Данные восстановлены')
-      setTimeout(() => { setStatus(''); onReload() }, 1200)
+      setTimeout(() => { setStatus(''); refreshFamily(); onReload() }, 1200)
     } catch (err) {
       setStatus(`✗ ${err.message}`)
       setTimeout(() => setStatus(''), 3000)

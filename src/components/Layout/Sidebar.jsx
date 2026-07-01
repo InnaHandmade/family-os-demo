@@ -1,5 +1,4 @@
 import { useAuth } from '../../contexts/AuthContext'
-import { getFamily } from '../../lib/data'
 
 const navItems = [
   { id: 'dashboard',   label: 'Dashboard',   icon: '⊞' },
@@ -16,8 +15,7 @@ const ROLE_BADGE = {
 }
 
 function Sidebar({ currentSection, onNavigate, isOpen, onClose, onSearchOpen }) {
-  const { currentUser, switchUser } = useAuth()
-  const family = getFamily()
+  const { currentUser, family, switchUser } = useAuth()
 
   return (
     <>

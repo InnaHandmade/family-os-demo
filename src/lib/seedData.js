@@ -1,11 +1,11 @@
 // ─── Fictional demo data — all names, numbers, addresses are invented ──────────
 
 export const SEED_FAMILY = [
-  { id: 'anna',  name: 'Anna',  role: 'Admin',  emoji: '👩', countries: ['UA', 'PL', 'UK'] },
-  { id: 'max',   name: 'Max',   role: 'Member', emoji: '👦', countries: ['UA', 'PL'] },
-  { id: 'leo',   name: 'Leo',   role: 'Member', emoji: '👦', countries: ['UA', 'TR'] },
-  { id: 'helen', name: 'Helen', role: 'Member', emoji: '👵', countries: ['UA', 'UZ'] },
-  { id: 'mark',  name: 'Mark',  role: 'Member', emoji: '👨', countries: ['PL', 'UK', 'GE'] },
+  { id: 'anna',  name: 'Anna',  role: 'Admin',      emoji: '👩', countries: ['UA', 'PL', 'UK'] },
+  { id: 'max',   name: 'Max',   role: 'Member',     emoji: '👦', countries: ['UA', 'PL'] },
+  { id: 'leo',   name: 'Leo',   role: 'Member',     emoji: '👦', countries: ['UA', 'TR'] },
+  { id: 'helen', name: 'Helen', role: 'Member',     emoji: '👵', countries: ['UA', 'UZ'] },
+  { id: 'mark',  name: 'Mark',  role: 'Accountant', emoji: '👨', countries: ['PL', 'UK', 'GE'] },
 ]
 
 export const SEED_DOCS = [

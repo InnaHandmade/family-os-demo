@@ -1,4 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
+import DeleteButton from '../shared/DeleteButton'
+import { useAuth } from '../../contexts/AuthContext'
 
 // --- File Attachments ---
 function FileAttachments({ files = [], onChange }) {
@@ -94,15 +96,14 @@ function Field({ label, children }) {
 const inputClass = "w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white outline-none focus:border-yellow-500/50 placeholder-gray-600"
 const selectClass = "w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white outline-none focus:border-yellow-500/50"
 
-// Row actions (edit + delete)
+// Row actions (edit + delete) — edit hidden for Accountant, delete hidden for non-Admin
 function RowActions({ onEdit, onDelete }) {
-  function confirmDelete() {
-    if (window.confirm('Удалить запись?')) onDelete()
-  }
+  const { canEdit } = useAuth()
+  if (!canEdit) return null
   return (
-    <div className="flex gap-1">
+    <div className="flex gap-1 items-center">
       <button onClick={onEdit} className="p-1.5 rounded-lg text-gray-600 hover:text-yellow-400 hover:bg-yellow-500/10 transition-colors text-xs">✎</button>
-      <button onClick={confirmDelete} className="p-1.5 rounded-lg text-gray-600 hover:text-red-400 hover:bg-red-500/10 transition-colors text-xs">✕</button>
+      <DeleteButton onDelete={onDelete} />
     </div>
   )
 }
@@ -143,6 +144,7 @@ function CompanyModal({ initial, onClose, onSave }) {
 }
 
 function CompaniesTab({ companies, setCompanies }) {
+  const { canEdit } = useAuth()
   const [modal, setModal] = useState(null) // null | 'new' | company object
 
   function handleSave(form) {
@@ -155,9 +157,11 @@ function CompaniesTab({ companies, setCompanies }) {
 
   return (
     <div className="space-y-3">
-      <div className="flex justify-end">
-        <button onClick={() => setModal('new')} className="text-sm px-4 py-2 rounded-lg bg-yellow-500/10 text-yellow-400 border border-yellow-500/20 hover:bg-yellow-500/20 transition-colors">+ New Company</button>
-      </div>
+      {canEdit && (
+        <div className="flex justify-end">
+          <button onClick={() => setModal('new')} className="text-sm px-4 py-2 rounded-lg bg-yellow-500/10 text-yellow-400 border border-yellow-500/20 hover:bg-yellow-500/20 transition-colors">+ New Company</button>
+        </div>
+      )}
       {companies.map(c => (
         <div key={c.id} className="p-4 rounded-xl bg-gray-900 border border-gray-800">
           <div className="flex items-center justify-between gap-4">
@@ -210,6 +214,7 @@ function ContractModal({ initial, companies, onClose, onSave }) {
 }
 
 function ContractsTab({ contracts, setContracts, companies }) {
+  const { canEdit } = useAuth()
   const [modal, setModal] = useState(null)
 
   function handleSave(form) {
@@ -222,9 +227,11 @@ function ContractsTab({ contracts, setContracts, companies }) {
 
   return (
     <div className="space-y-3">
-      <div className="flex justify-end">
-        <button onClick={() => setModal('new')} className="text-sm px-4 py-2 rounded-lg bg-yellow-500/10 text-yellow-400 border border-yellow-500/20 hover:bg-yellow-500/20 transition-colors">+ New Contract</button>
-      </div>
+      {canEdit && (
+        <div className="flex justify-end">
+          <button onClick={() => setModal('new')} className="text-sm px-4 py-2 rounded-lg bg-yellow-500/10 text-yellow-400 border border-yellow-500/20 hover:bg-yellow-500/20 transition-colors">+ New Contract</button>
+        </div>
+      )}
       {contracts.map(c => (
         <div key={c.id} className="p-4 rounded-xl bg-gray-900 border border-gray-800">
           <div className="flex items-center justify-between gap-4">
@@ -300,6 +307,7 @@ function InvoiceModal({ initial, companies, onClose, onSave, nextId }) {
 }
 
 function InvoicesTab({ invoices, setInvoices, companies }) {
+  const { canEdit } = useAuth()
   const [modal, setModal] = useState(null)
 
   function getNextId() {
@@ -328,9 +336,11 @@ function InvoicesTab({ invoices, setInvoices, companies }) {
 
   return (
     <div className="space-y-3">
-      <div className="flex justify-end">
-        <button onClick={() => setModal('new')} className="text-sm px-4 py-2 rounded-lg bg-yellow-500/10 text-yellow-400 border border-yellow-500/20 hover:bg-yellow-500/20 transition-colors">+ New Invoice</button>
-      </div>
+      {canEdit && (
+        <div className="flex justify-end">
+          <button onClick={() => setModal('new')} className="text-sm px-4 py-2 rounded-lg bg-yellow-500/10 text-yellow-400 border border-yellow-500/20 hover:bg-yellow-500/20 transition-colors">+ New Invoice</button>
+        </div>
+      )}
       {invoices.map(inv => (
         <div key={inv.id} className="p-4 rounded-xl bg-gray-900 border border-gray-800">
           <div className="flex items-center justify-between gap-4">

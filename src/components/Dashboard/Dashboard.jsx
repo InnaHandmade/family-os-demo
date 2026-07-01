@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { DEFAULT_FAMILY, loadData, saveData } from '../../lib/data'
 import { loadSeedData, exportAllData, importAllData } from '../../lib/seedData'
+import DeleteButton from '../shared/DeleteButton'
 
 const colorMap = {
   yellow: 'text-yellow-400 bg-yellow-500/10 border border-yellow-500/20',
@@ -100,7 +101,7 @@ function getModuleCards() {
 }
 
 // --- Family cards ---
-function FamilyCard({ person, onNameChange, onOpen }) {
+function FamilyCard({ person, onNameChange, onOpen, onDelete }) {
   const [editing, setEditing] = useState(false)
   const [value, setValue] = useState(person.name)
 
@@ -118,8 +119,13 @@ function FamilyCard({ person, onNameChange, onOpen }) {
   return (
     <div
       onClick={() => !editing && onOpen(person.name)}
-      className="p-4 rounded-xl bg-gray-900 border border-gray-800 text-center cursor-pointer hover:border-yellow-500/40 hover:bg-gray-800/60 transition-all group"
+      className="p-4 rounded-xl bg-gray-900 border border-gray-800 text-center cursor-pointer hover:border-yellow-500/40 hover:bg-gray-800/60 transition-all group relative"
     >
+      {/* Delete button — top-right, visible on hover */}
+      <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity" onClick={e => e.stopPropagation()}>
+        <DeleteButton onDelete={() => onDelete(person.id)} />
+      </div>
+
       <div className="text-3xl mb-2">{person.emoji}</div>
       {editing ? (
         <input autoFocus value={value} onChange={e => setValue(e.target.value)}
@@ -154,20 +160,27 @@ function FamilyCard({ person, onNameChange, onOpen }) {
 function AddFamilyCard({ onAdd }) {
   const [adding, setAdding] = useState(false)
   const [name, setName] = useState('')
+  const [role, setRole] = useState('Member')
 
   function handleAdd() {
-    if (name.trim()) { onAdd(name.trim()); setName(''); setAdding(false) }
+    if (name.trim()) { onAdd(name.trim(), role); setName(''); setRole('Member'); setAdding(false) }
   }
 
   if (adding) {
     return (
-      <div className="p-4 rounded-xl bg-gray-900 border border-yellow-500/30 text-center">
-        <div className="text-3xl mb-2">👤</div>
+      <div className="p-4 rounded-xl bg-gray-900 border border-yellow-500/30 text-center space-y-2">
+        <div className="text-3xl">👤</div>
         <input autoFocus value={name} onChange={e => setName(e.target.value)}
           onKeyDown={e => e.key === 'Enter' && handleAdd()} placeholder="Имя"
           className="bg-gray-800 text-white text-sm text-center rounded px-2 py-0.5 w-full outline-none border border-yellow-500/50 placeholder-gray-600"
         />
-        <div className="flex gap-2 mt-3">
+        <select value={role} onChange={e => setRole(e.target.value)}
+          className="bg-gray-800 text-gray-400 text-xs text-center rounded px-2 py-1 w-full outline-none border border-gray-700">
+          <option value="Member">Member</option>
+          <option value="Accountant">Accountant</option>
+          <option value="Admin">Admin</option>
+        </select>
+        <div className="flex gap-2">
           <button onClick={handleAdd} className="flex-1 text-xs bg-yellow-500/20 text-yellow-400 rounded py-1 hover:bg-yellow-500/30">OK</button>
           <button onClick={() => { setAdding(false); setName('') }} className="flex-1 text-xs bg-gray-800 text-gray-500 rounded py-1 hover:bg-gray-700">✕</button>
         </div>
@@ -265,8 +278,12 @@ function Dashboard({ onNavigate }) {
     setFamily(prev => prev.map(p => p.id === id ? { ...p, name: newName } : p))
   }
 
-  function handleAdd(name) {
-    setFamily(prev => [...prev, { id: `person-${Date.now()}`, name, role: 'Member', emoji: '👤', countries: [] }])
+  function handleAdd(name, role = 'Member') {
+    setFamily(prev => [...prev, { id: `person-${Date.now()}`, name, role, emoji: '👤', countries: [] }])
+  }
+
+  function handleDelete(id) {
+    setFamily(prev => prev.filter(p => p.id !== id))
   }
 
   // detect empty state: no docs, no medical, no education
@@ -340,7 +357,7 @@ function Dashboard({ onNavigate }) {
         <h2 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3">👨‍👩‍👧‍👦 Семья</h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
           {family.map(person => (
-            <FamilyCard key={person.id} person={person} onNameChange={handleNameChange} onOpen={name => onNavigate('person:' + name)} />
+            <FamilyCard key={person.id} person={person} onNameChange={handleNameChange} onOpen={name => onNavigate('person:' + name)} onDelete={handleDelete} />
           ))}
           <AddFamilyCard onAdd={handleAdd} />
         </div>

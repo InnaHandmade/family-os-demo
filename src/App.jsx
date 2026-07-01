@@ -6,8 +6,9 @@ import CountryDocs from './components/CountryDocs/CountryDocs'
 import Education from './components/Education/Education'
 import Medical from './components/Medical/Medical'
 import PersonView from './components/PersonView/PersonView'
+import { AuthProvider } from './contexts/AuthContext'
 
-function App() {
+function AppInner() {
   const [currentSection, setCurrentSection] = useState('dashboard')
 
   function renderSection() {
@@ -35,6 +36,14 @@ function App() {
     <Layout currentSection={currentSection} onNavigate={setCurrentSection}>
       {renderSection()}
     </Layout>
+  )
+}
+
+function App() {
+  return (
+    <AuthProvider>
+      <AppInner />
+    </AuthProvider>
   )
 }
 

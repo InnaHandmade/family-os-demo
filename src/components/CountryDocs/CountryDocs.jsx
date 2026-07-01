@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { COUNTRIES, COUNTRY_NAMES, COUNTRY_FLAGS, loadData, saveData, getFamilyNames } from '../../lib/data'
+import DeleteButton from '../shared/DeleteButton'
 const DOC_TYPES = ['Passport', 'ID Card', 'Residence Permit', 'Visa', 'Work Permit', 'Driving License', 'Health Insurance', 'Birth Certificate', 'Marriage Certificate', 'Tax ID', 'Bank Statement', 'Other']
 
 const defaultDocs = [
@@ -169,9 +170,9 @@ function DocCard({ doc, onEdit, onDelete, onFilesChange }) {
             {doc.note && <div className="text-xs text-gray-500 mt-1 italic">{doc.note}</div>}
           </div>
         </div>
-        <div className="flex gap-1 flex-shrink-0">
+        <div className="flex gap-1 flex-shrink-0 items-center">
           <button onClick={onEdit} className="p-1.5 rounded-lg text-gray-600 hover:text-yellow-400 hover:bg-yellow-500/10 text-xs transition-colors">✎</button>
-          <button onClick={onDelete} className="p-1.5 rounded-lg text-gray-600 hover:text-red-400 hover:bg-red-500/10 text-xs transition-colors">✕</button>
+          <DeleteButton onDelete={onDelete} />
         </div>
       </div>
       <div className="mt-3 pt-3 border-t border-gray-800">
@@ -240,7 +241,7 @@ function CountryDocs() {
   }
 
   function handleDelete(id) {
-    if (window.confirm('Удалить документ?')) setDocs(prev => prev.filter(d => d.id !== id))
+    setDocs(prev => prev.filter(d => d.id !== id))
   }
 
   function updateFiles(id, files) {

@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { COUNTRIES, COUNTRY_NAMES, COUNTRY_FLAGS, loadData, saveData, getFamilyNames } from '../../lib/data'
+import DeleteButton from '../shared/DeleteButton'
 
 const EDU_TYPES = [
   'School', 'University', 'College', 'Kindergarten',
@@ -146,9 +147,9 @@ function RecordCard({ rec, onEdit, onDelete, onFilesChange }) {
             {rec.note && <div className="text-xs text-gray-500 mt-1 italic">{rec.note}</div>}
           </div>
         </div>
-        <div className="flex gap-1 flex-shrink-0">
+        <div className="flex gap-1 flex-shrink-0 items-center">
           <button onClick={onEdit} className="p-1.5 rounded-lg text-gray-600 hover:text-yellow-400 hover:bg-yellow-500/10 text-xs transition-colors">✎</button>
-          <button onClick={onDelete} className="p-1.5 rounded-lg text-gray-600 hover:text-red-400 hover:bg-red-500/10 text-xs transition-colors">✕</button>
+          <DeleteButton onDelete={onDelete} />
         </div>
       </div>
       <div className="mt-3 pt-3 border-t border-gray-800">
@@ -206,7 +207,7 @@ function Education() {
   }
 
   function handleDelete(id) {
-    if (window.confirm('Удалить запись?')) setRecords(prev => prev.filter(r => r.id !== id))
+    setRecords(prev => prev.filter(r => r.id !== id))
   }
 
   function updateFiles(id, files) {

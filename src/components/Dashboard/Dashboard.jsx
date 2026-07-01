@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { DEFAULT_FAMILY, loadData, saveData } from '../../lib/data'
 
 const moduleCards = [
   { id: 'business', label: 'Business', icon: '◈', count: 3, unit: 'компании', color: 'yellow' },
@@ -21,13 +22,6 @@ const colorMap = {
   green: 'text-green-400 bg-green-500/10 border border-green-500/20',
 }
 
-const defaultFamily = [
-  { id: 'anna', name: 'Anna', role: 'Admin', emoji: '👩', countries: ['UA', 'PL'] },
-  { id: 'max', name: 'Max', role: 'Member', emoji: '👦', countries: ['UA', 'UK'] },
-  { id: 'leo', name: 'Leo', role: 'Member', emoji: '👦', countries: ['UA', 'TR'] },
-  { id: 'helen', name: 'Helen', role: 'Member', emoji: '👵', countries: ['UA', 'UZ'] },
-  { id: 'mark', name: 'Mark', role: 'Member', emoji: '👨', countries: ['PL', 'UK'] },
-]
 
 function FamilyCard({ person, onNameChange }) {
   const [editing, setEditing] = useState(false)
@@ -116,15 +110,14 @@ function AddFamilyCard({ onAdd }) {
 function Dashboard({ onNavigate }) {
   const [family, setFamily] = useState(() => {
     try {
-      const saved = localStorage.getItem('family-members')
-      return saved ? JSON.parse(saved) : defaultFamily
+      return loadData('family-members', DEFAULT_FAMILY)
     } catch {
-      return defaultFamily
+      return DEFAULT_FAMILY
     }
   })
 
   useEffect(() => {
-    localStorage.setItem('family-members', JSON.stringify(family))
+    saveData('family-members', family)
   }, [family])
 
   function handleNameChange(id, newName) {

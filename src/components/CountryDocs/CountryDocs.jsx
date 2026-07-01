@@ -1,9 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-
-const FAMILY = ['Anna', 'Max', 'Leo', 'Helen', 'Mark']
-const COUNTRIES = ['UA', 'PL', 'UK', 'TR', 'UZ', 'GE']
-const COUNTRY_NAMES = { UA: 'Ukraine', PL: 'Poland', UK: 'United Kingdom', TR: 'Turkey', UZ: 'Uzbekistan', GE: 'Georgia' }
-const COUNTRY_FLAGS = { UA: '🇺🇦', PL: '🇵🇱', UK: '🇬🇧', TR: '🇹🇷', UZ: '🇺🇿', GE: '🇬🇪' }
+import { COUNTRIES, COUNTRY_NAMES, COUNTRY_FLAGS, loadData, saveData, getFamilyNames } from '../../lib/data'
 const DOC_TYPES = ['Passport', 'ID Card', 'Residence Permit', 'Visa', 'Work Permit', 'Driving License', 'Health Insurance', 'Birth Certificate', 'Marriage Certificate', 'Tax ID', 'Bank Statement', 'Other']
 
 const defaultDocs = [
@@ -223,12 +219,9 @@ function CountryCard({ country, docs, onClick }) {
 }
 
 // --- Main ---
-function load(key, fallback) {
-  try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback } catch { return fallback }
-}
-
 function CountryDocs() {
-  const [docs, setDocs] = useState(() => load('country-docs-v2', defaultDocs))
+  const FAMILY = getFamilyNames()
+  const [docs, setDocs] = useState(() => loadData('country-docs-v2', defaultDocs))
   const [view, setView] = useState('countries') // 'countries' | 'people'
   const [selectedCountry, setSelectedCountry] = useState(null) // null = show all countries
   const [selectedPerson, setSelectedPerson] = useState(null) // null = show all people
@@ -236,7 +229,7 @@ function CountryDocs() {
   const [filterCountry, setFilterCountry] = useState('all') // filter inside person view
   const [modal, setModal] = useState(null)
 
-  useEffect(() => { localStorage.setItem('country-docs-v2', JSON.stringify(docs)) }, [docs])
+  useEffect(() => { saveData('country-docs-v2', docs) }, [docs])
 
   function handleSave(form) {
     if (modal === 'new') {

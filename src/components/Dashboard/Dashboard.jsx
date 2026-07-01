@@ -99,7 +99,7 @@ function getModuleCards() {
 }
 
 // --- Family cards ---
-function FamilyCard({ person, onNameChange }) {
+function FamilyCard({ person, onNameChange, onOpen }) {
   const [editing, setEditing] = useState(false)
   const [value, setValue] = useState(person.name)
 
@@ -109,20 +109,36 @@ function FamilyCard({ person, onNameChange }) {
     else setValue(person.name)
   }
 
+  function handleEditClick(e) {
+    e.stopPropagation()
+    setEditing(true)
+  }
+
   return (
-    <div className="p-4 rounded-xl bg-gray-900 border border-gray-800 text-center">
+    <div
+      onClick={() => !editing && onOpen(person.name)}
+      className="p-4 rounded-xl bg-gray-900 border border-gray-800 text-center cursor-pointer hover:border-yellow-500/40 hover:bg-gray-800/60 transition-all group"
+    >
       <div className="text-3xl mb-2">{person.emoji}</div>
       {editing ? (
         <input autoFocus value={value} onChange={e => setValue(e.target.value)}
           onBlur={handleBlur} onKeyDown={e => e.key === 'Enter' && handleBlur()}
+          onClick={e => e.stopPropagation()}
           className="bg-gray-800 text-white text-sm font-medium text-center rounded px-2 py-0.5 w-full outline-none border border-yellow-500/50"
         />
       ) : (
-        <button onClick={() => setEditing(true)}
-          className="text-sm font-medium text-white hover:text-yellow-400 transition-colors"
-          title="Нажми чтобы изменить">
-          {person.name}
-        </button>
+        <div className="flex items-center justify-center gap-1">
+          <span className="text-sm font-medium text-white group-hover:text-yellow-400 transition-colors">
+            {person.name}
+          </span>
+          <button
+            onClick={handleEditClick}
+            title="Переименовать"
+            className="opacity-0 group-hover:opacity-100 text-gray-600 hover:text-gray-400 transition-all text-xs leading-none"
+          >
+            ✎
+          </button>
+        </div>
       )}
       <div className="text-xs text-gray-600 mt-1">{person.role}</div>
       <div className="flex gap-1 justify-center mt-2 flex-wrap">
@@ -236,7 +252,7 @@ function Dashboard({ onNavigate }) {
         <h2 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3">👨‍👩‍👧‍👦 Семья</h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
           {family.map(person => (
-            <FamilyCard key={person.id} person={person} onNameChange={handleNameChange} />
+            <FamilyCard key={person.id} person={person} onNameChange={handleNameChange} onOpen={name => onNavigate('person:' + name)} />
           ))}
           <AddFamilyCard onAdd={handleAdd} />
         </div>

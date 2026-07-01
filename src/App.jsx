@@ -5,6 +5,7 @@ import Business from './components/Business/Business'
 import CountryDocs from './components/CountryDocs/CountryDocs'
 import Education from './components/Education/Education'
 import Medical from './components/Medical/Medical'
+import PersonView from './components/PersonView/PersonView'
 
 function App() {
   const [currentSection, setCurrentSection] = useState('dashboard')
@@ -15,6 +16,13 @@ function App() {
     if (currentSection === 'country-docs') return <CountryDocs />
     if (currentSection === 'education') return <Education />
     if (currentSection === 'medical') return <Medical />
+
+    // Person view: e.g. "person:Anna"
+    if (currentSection.startsWith('person:')) {
+      const name = currentSection.slice(7)
+      return <PersonView name={name} onBack={() => setCurrentSection('dashboard')} />
+    }
+
     return (
       <div className="py-10">
         <h1 className="text-2xl font-bold text-yellow-400 mb-2 capitalize">{currentSection}</h1>

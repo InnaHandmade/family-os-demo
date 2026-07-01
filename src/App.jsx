@@ -6,21 +6,24 @@ import CountryDocs from './components/CountryDocs/CountryDocs'
 import Education from './components/Education/Education'
 import Medical from './components/Medical/Medical'
 import PersonView from './components/PersonView/PersonView'
+import Countries from './components/Countries/Countries'
 import { AuthProvider, useAuth } from './contexts/AuthContext'
 
 function AppInner() {
   const [currentSection, setCurrentSection] = useState('dashboard')
   const { currentUser } = useAuth()
 
-  // Accountant can only access Business — redirect on role change
+  // Accountant can only access Business — redirect on role change or direct nav
+  const ACCOUNTANT_ALLOWED = ['business']
   useEffect(() => {
-    if (currentUser?.role === 'Accountant' && currentSection !== 'business') {
+    if (currentUser?.role === 'Accountant' && !ACCOUNTANT_ALLOWED.includes(currentSection)) {
       setCurrentSection('business')
     }
-  }, [currentUser?.role])
+  }, [currentUser?.role, currentSection])
 
   function renderSection() {
     if (currentSection === 'dashboard') return <Dashboard onNavigate={setCurrentSection} />
+    if (currentSection === 'countries') return <Countries />
     if (currentSection === 'business') return <Business />
     if (currentSection === 'country-docs') return <CountryDocs />
     if (currentSection === 'education') return <Education />

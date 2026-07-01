@@ -2,9 +2,10 @@ import { useAuth } from '../../contexts/AuthContext'
 
 const navItems = [
   { id: 'dashboard',   label: 'Dashboard',   icon: '⊞' },
-  { id: 'business',    label: 'Business',     icon: '◈' },
-  { id: 'medical',     label: 'Medical',      icon: '♡' },
-  { id: 'education',   label: 'Education',    icon: '◎' },
+  { id: 'countries',   label: 'Countries',   icon: '🌍' },
+  { id: 'business',    label: 'Business',    icon: '◈' },
+  { id: 'medical',     label: 'Medical',     icon: '♡' },
+  { id: 'education',   label: 'Education',   icon: '◎' },
   { id: 'country-docs', label: 'Country Docs', icon: '⊙' },
 ]
 

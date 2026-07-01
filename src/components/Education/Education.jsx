@@ -64,7 +64,7 @@ function FileAttachments({ files = [], onChange }) {
 // --- Record Modal ---
 function RecordModal({ initial, defaultCountry, defaultPerson, onClose, onSave }) {
   const [form, setForm] = useState(initial ?? {
-    person: defaultPerson ?? FAMILY[0],
+    person: defaultPerson ?? getFamilyNames()[0],
     country: defaultCountry ?? COUNTRIES[0],
     type: EDU_TYPES[0],
     institution: '', program: '',
@@ -87,7 +87,7 @@ function RecordModal({ initial, defaultCountry, defaultPerson, onClose, onSave }
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div className="space-y-1">{lbl('Person')}<select className={sel} value={form.person} onChange={e => set('person', e.target.value)}>{FAMILY.map(p => <option key={p}>{p}</option>)}</select></div>
+          <div className="space-y-1">{lbl('Person')}<select className={sel} value={form.person} onChange={e => set('person', e.target.value)}>{getFamilyNames().map(p => <option key={p}>{p}</option>)}</select></div>
           <div className="space-y-1">{lbl('Country')}<select className={sel} value={form.country} onChange={e => set('country', e.target.value)}>{COUNTRIES.map(c => <option key={c}>{COUNTRY_FLAGS[c]} {c}</option>)}</select></div>
         </div>
 

@@ -71,7 +71,7 @@ function FileAttachments({ files = [], onChange }) {
 // --- Doc Form Modal ---
 function DocModal({ initial, defaultCountry, defaultPerson, onClose, onSave }) {
   const [form, setForm] = useState(initial ?? {
-    person: defaultPerson ?? FAMILY[0],
+    person: defaultPerson ?? getFamilyNames()[0],
     country: defaultCountry ?? COUNTRIES[0],
     type: DOC_TYPES[0],
     number: '', issued: '', expires: '', note: '',
@@ -91,7 +91,7 @@ function DocModal({ initial, defaultCountry, defaultPerson, onClose, onSave }) {
           <div className="space-y-1">
             <label className="text-xs text-gray-500">Person</label>
             <select className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white outline-none" value={form.person} onChange={e => set('person', e.target.value)}>
-              {FAMILY.map(p => <option key={p}>{p}</option>)}
+              {getFamilyNames().map(p => <option key={p}>{p}</option>)}
             </select>
           </div>
           <div className="space-y-1">

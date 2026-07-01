@@ -258,7 +258,7 @@ function InvoiceModal({ initial, companies, onClose, onSave, nextId }) {
   }
   return (
     <Modal title={initial ? `Edit ${initial.id}` : 'New Invoice'} onClose={onClose}>
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <Field label="Invoice number"><input className={inputClass} value={form.id} onChange={e => set('id', e.target.value)} /></Field>
         <Field label="Invoice date"><input type="date" className={inputClass} value={form.date} onChange={e => set('date', e.target.value)} /></Field>
       </div>
@@ -276,11 +276,11 @@ function InvoiceModal({ initial, companies, onClose, onSave, nextId }) {
       <div className="border-t border-gray-800 pt-2 space-y-3">
         <p className="text-xs text-gray-600">Service</p>
         <Field label="Description"><input className={inputClass} value={form.description} onChange={e => set('description', e.target.value)} /></Field>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <Field label="Period from"><input type="date" className={inputClass} value={form.dateFrom} onChange={e => set('dateFrom', e.target.value)} /></Field>
           <Field label="Period to"><input type="date" className={inputClass} value={form.dateTo} onChange={e => set('dateTo', e.target.value)} /></Field>
         </div>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <Field label="Currency">
             <select className={selectClass} value={form.currency} onChange={e => set('currency', e.target.value)}>
               <option>EUR</option><option>GBP</option><option>USD</option><option>UAH</option><option>PLN</option>
@@ -432,7 +432,7 @@ function ReportsTab({ invoices }) {
         </div>
         <button onClick={exportCSV} className="text-sm px-4 py-2 rounded-lg bg-gray-800 text-gray-300 border border-gray-700 hover:bg-gray-700 transition-colors">↓ Export CSV</button>
       </div>
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <SumBlock label="✓ Paid" color="border-green-500/20" sums={sumByCurrency(filtered.filter(i => i.status === 'Paid'))} />
         <SumBlock label="⏳ Pending" color="border-yellow-500/20" sums={sumByCurrency(filtered.filter(i => i.status === 'Pending'))} />
         <SumBlock label="⚠ Overdue" color="border-red-500/20" sums={sumByCurrency(filtered.filter(i => i.status === 'Overdue'))} />
@@ -487,10 +487,10 @@ function Business() {
         <h1 className="text-2xl font-bold text-white">Business</h1>
         <p className="text-gray-500 text-sm mt-1">Компании, контракты, инвойсы</p>
       </div>
-      <div className="flex gap-1 bg-gray-900 p-1 rounded-xl w-fit">
+      <div className="flex gap-1 bg-gray-900 p-1 rounded-xl overflow-x-auto">
         {tabs.map(tab => (
           <button key={tab.id} onClick={() => setActiveTab(tab.id)}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${activeTab === tab.id ? 'bg-yellow-500/10 text-yellow-400' : 'text-gray-500 hover:text-gray-300'}`}>
+            className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-1.5 whitespace-nowrap flex-shrink-0 ${activeTab === tab.id ? 'bg-yellow-500/10 text-yellow-400' : 'text-gray-500 hover:text-gray-300'}`}>
             {tab.label}
             {counts[tab.id] !== null && (
               <span className={`text-xs px-1.5 py-0.5 rounded-full ${activeTab === tab.id ? 'bg-yellow-500/20 text-yellow-400' : 'bg-gray-800 text-gray-600'}`}>

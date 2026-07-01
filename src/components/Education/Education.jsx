@@ -85,7 +85,7 @@ function RecordModal({ initial, defaultCountry, defaultPerson, onClose, onSave }
           <button onClick={onClose} className="text-gray-500 hover:text-white text-xl">✕</button>
         </div>
 
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div className="space-y-1">{lbl('Person')}<select className={sel} value={form.person} onChange={e => set('person', e.target.value)}>{FAMILY.map(p => <option key={p}>{p}</option>)}</select></div>
           <div className="space-y-1">{lbl('Country')}<select className={sel} value={form.country} onChange={e => set('country', e.target.value)}>{COUNTRIES.map(c => <option key={c}>{COUNTRY_FLAGS[c]} {c}</option>)}</select></div>
         </div>
@@ -96,7 +96,7 @@ function RecordModal({ initial, defaultCountry, defaultPerson, onClose, onSave }
 
         <div className="space-y-1">{lbl('Program / Subject')}<input className={inp} placeholder="Специальность, курс, предмет" value={form.program} onChange={e => set('program', e.target.value)} /></div>
 
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div className="space-y-1">{lbl('Start date')}<input type="date" className={inp} value={form.dateFrom} onChange={e => set('dateFrom', e.target.value)} /></div>
           <div className="space-y-1">{lbl('End date')}<input type="date" className={inp} value={form.dateTo} onChange={e => set('dateTo', e.target.value)} /></div>
         </div>
@@ -288,7 +288,7 @@ function Education() {
         <p className="text-gray-500 text-sm mt-1">Образование семьи по странам</p>
       </div>
 
-      <div className="flex gap-1 bg-gray-900 p-1 rounded-xl w-fit">
+      <div className="flex gap-1 bg-gray-900 p-1 rounded-xl overflow-x-auto">
         <button onClick={() => setView('countries')} className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${view === 'countries' ? 'bg-yellow-500/10 text-yellow-400' : 'text-gray-500 hover:text-gray-300'}`}>🌍 По странам</button>
         <button onClick={() => setView('people')} className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${view === 'people' ? 'bg-yellow-500/10 text-yellow-400' : 'text-gray-500 hover:text-gray-300'}`}>👤 По людям</button>
       </div>

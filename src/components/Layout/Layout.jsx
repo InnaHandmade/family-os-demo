@@ -23,7 +23,7 @@ function Layout({ children, currentSection, onNavigate }) {
     <div className="min-h-screen bg-gray-950 text-white flex flex-col lg:flex-row">
       <Topbar onMenuToggle={() => setSidebarOpen(true)} onSearchOpen={() => setSearchOpen(true)} />
       <Sidebar currentSection={currentSection} onNavigate={onNavigate} isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} onSearchOpen={() => setSearchOpen(true)} />
-      <main className="flex-1 p-6 overflow-auto">{children}</main>
+      <main className="flex-1 p-4 lg:p-6 overflow-auto">{children}</main>
 
       {searchOpen && (
         <GlobalSearch
